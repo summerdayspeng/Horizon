@@ -7,7 +7,7 @@ import re
 from rich.console import Console
 from dataclasses import asdict, dataclass
 from enum import Enum
-from urllib.parse import urlsplit, urlunsplit
+from urllib.parse import urlencode, urlsplit, urlunsplit
 from datetime import datetime, timezone
 from typing import Any, List, Optional, Union, cast
 import httpx
@@ -141,6 +141,27 @@ def _render(
         return _PLACEHOLDER_RE.sub(_replace, template)
     # int, float, bool, None — return as-is
     return template
+
+
+def _encode_form(rendered: Union[dict, list]) -> str:
+    """URL-encode a flat mapping into an application/x-www-form-urlencoded body.
+
+    Values must be scalars; nested objects/lists cannot be represented in form
+    encoding and are rejected rather than silently dropped.
+    """
+    if not isinstance(rendered, dict):
+        raise ValueError(
+            "webhook.body_format 'form' requires request_body to be a JSON object"
+        )
+    pairs = {}
+    for key, value in rendered.items():
+        if isinstance(value, (dict, list)):
+            raise ValueError(
+                f"webhook.body_format 'form' does not support nested values "
+                f"(key '{key}')"
+            )
+        pairs[key] = "" if value is None else str(value)
+    return urlencode(pairs, encoding="utf-8")
 
 
 def _format_markdown_for_webhook(value: str) -> str:
@@ -325,8 +346,12 @@ class WebhookNotifier:
         if raw_body:
             if isinstance(raw_body, (dict, list)):
                 rendered_obj = _render(raw_body, body_variables)
-                body_content = json.dumps(rendered_obj, ensure_ascii=False)
-                content_type = "application/json"
+                if self.config.body_format == "form":
+                    body_content = _encode_form(rendered_obj)
+                    content_type = "application/x-www-form-urlencoded"
+                else:
+                    body_content = json.dumps(rendered_obj, ensure_ascii=False)
+                    content_type = "application/json"
             elif isinstance(raw_body, str) and raw_body.strip():
                 rendered = cast(str, _render(raw_body, body_variables))
                 body_content = rendered

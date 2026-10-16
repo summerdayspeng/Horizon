@@ -201,6 +201,8 @@ class AIConfig(BaseModel):
     # Azure OpenAI specific; required when provider == AZURE
     azure_endpoint_env: Optional[str] = None
     api_version: Optional[str] = None
+    # Extra HTTP headers sent with every request (e.g. gateway routing headers)
+    extra_headers: Optional[Dict[str, str]] = None
 
     @field_validator("languages")
     @classmethod
@@ -463,6 +465,9 @@ class WebhookConfig(BaseModel):
     request_body: Optional[Union[str, dict, list]] = (
         None  # POST body: real JSON object or string with #{key} placeholders; if empty, will use GET
     )
+    body_format: str = (
+        "json"  # Encoding for a dict/list request_body: json, or form (urlencoded)
+    )
     headers: Optional[str] = None  # Custom headers, "Key: Value" per line
     delivery: str = "summary"  # summary, or summary_and_items
     overview_position: str = "first"  # For summary_and_items: first, or last
@@ -517,6 +522,16 @@ class WebhookConfig(BaseModel):
         if v not in allowed:
             raise ValueError(
                 f"webhook.overview_position must be one of {allowed}, got '{v}'"
+            )
+        return v
+
+    @field_validator("body_format")
+    @classmethod
+    def validate_body_format(cls, v: str) -> str:
+        allowed = {"json", "form"}
+        if v not in allowed:
+            raise ValueError(
+                f"webhook.body_format must be one of {allowed}, got '{v}'"
             )
         return v
 

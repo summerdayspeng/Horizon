@@ -210,6 +210,8 @@ class OpenAIClient(AIClient):
         base_url = self._resolve_base_url(config)
         if base_url:
             kwargs["base_url"] = base_url
+        if config.extra_headers:
+            kwargs["default_headers"] = dict(config.extra_headers)
 
         self.client = AsyncOpenAI(**kwargs)
         self.model = config.model
