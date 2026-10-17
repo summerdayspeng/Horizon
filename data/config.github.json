@@ -27,7 +27,7 @@
         "topic_dedup": true
       },
       "ai-practice": {
-        "threshold": 5.0,
+        "threshold": 3.0,
         "topic_dedup": true
       },
       "tech-blog": {
@@ -215,15 +215,33 @@
         "name": "TLDR AI",
         "url": "https://tldr.tech/api/rss/ai",
         "enabled": true,
-        "category": "ai-news-digest",
-        "profile": "tech-news"
+        "category": "ai-practice",
+        "profile": "ai-practice",
+        "content_extractor": "trafilatura"
       },
       {
         "name": "The Neuron",
         "url": "https://www.theneuron.ai/feed",
         "enabled": true,
-        "category": "ai-news-digest",
-        "profile": "tech-news"
+        "category": "ai-practice",
+        "profile": "ai-practice",
+        "content_extractor": "trafilatura"
+      },
+      {
+        "name": "Interconnects",
+        "url": "https://www.interconnects.ai/feed",
+        "enabled": true,
+        "category": "ai-practice",
+        "profile": "ai-practice",
+        "content_extractor": "trafilatura"
+      },
+      {
+        "name": "科学空间",
+        "url": "https://kexue.fm/feed",
+        "enabled": true,
+        "category": "ai-practice-cn",
+        "profile": "ai-practice",
+        "content_extractor": "trafilatura"
       }
     ],
     "reddit": {
@@ -263,6 +281,24 @@
           "time_filter": "day",
           "fetch_limit": 8,
           "min_score": 150,
+          "profile": "ai-practice"
+        },
+        {
+          "subreddit": "singularity",
+          "enabled": true,
+          "sort": "top",
+          "time_filter": "day",
+          "fetch_limit": 8,
+          "min_score": 300,
+          "profile": "ai-practice"
+        },
+        {
+          "subreddit": "artificial",
+          "enabled": true,
+          "sort": "top",
+          "time_filter": "day",
+          "fetch_limit": 8,
+          "min_score": 200,
           "profile": "ai-practice"
         }
       ],
