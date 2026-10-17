@@ -1,0 +1,66 @@
+name: Diagnose ServerChan
+
+on:
+  workflow_dispatch:
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show runner egress info
+        run: |
+          echo "=== IP / geo ==="
+          curl -s --max-time 20 https://ipinfo.io/json || echo "(ipinfo failed)"
+          echo ""
+          echo "=== DNS for sctapi.ftqq.com ==="
+          getent hosts sctapi.ftqq.com || echo "(dns failed)"
+
+      - name: Test 1 - minimal form body
+        env:
+          SERVERCHAN_URL: ${{ secrets.SERVERCHAN_URL }}
+        run: |
+          echo "URL secret length: ${#SERVERCHAN_URL}"
+          code=$(curl -s -o /tmp/r1.txt -w "%{http_code}" --max-time 30 \
+            -X POST "$SERVERCHAN_URL" \
+            --data-urlencode "title=Horizon 诊断 1" \
+            --data-urlencode "desp=minimal form test from GitHub Actions")
+          echo "HTTP $code"
+          echo "--- response body ---"
+          cat /tmp/r1.txt
+          echo ""
+
+      - name: Test 2 - markdown body
+        env:
+          SERVERCHAN_URL: ${{ secrets.SERVERCHAN_URL }}
+        run: |
+          code=$(curl -s -o /tmp/r2.txt -w "%{http_code}" --max-time 30 \
+            -X POST "$SERVERCHAN_URL" \
+            --data-urlencode "title=Horizon 诊断 2" \
+            --data-urlencode "desp=## 标题
+
+正文 **粗体** 与换行
+
+- 项目一
+- 项目二")
+          echo "HTTP $code"
+          echo "--- response body ---"
+          cat /tmp/r2.txt
+          echo ""
+
+      - name: Test 3 - long body (roughly digest size)
+        env:
+          SERVERCHAN_URL: ${{ secrets.SERVERCHAN_URL }}
+        run: |
+          python3 -c "
+          body = '## 长内容测试\n\n' + ('这是一段中文测试内容，用于模拟简报正文。' * 900)
+          open('/tmp/long.txt','w',encoding='utf-8').write(body)
+          print('payload chars:', len(body), 'bytes:', len(body.encode('utf-8')))
+          "
+          code=$(curl -s -o /tmp/r3.txt -w "%{http_code}" --max-time 60 \
+            -X POST "$SERVERCHAN_URL" \
+            --data-urlencode "title=Horizon 诊断 3" \
+            --data-urlencode "desp@/tmp/long.txt")
+          echo "HTTP $code"
+          echo "--- response body ---"
+          cat /tmp/r3.txt
+          echo ""
