@@ -319,7 +319,7 @@
     ],
     "request_body": {
       "title": "#{message_title}",
-      "desp": "#{summary}"
+      "desp": "#{summary?limit=9000&split=---}\n\n---\n\n> 篇幅所限，微信版已截断。完整日报见 https://summerdayspeng.github.io/Horizon/"
     },
     "body_format": "form",
     "headers": ""
