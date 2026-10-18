@@ -30,6 +30,10 @@
         "threshold": 3.0,
         "topic_dedup": true
       },
+      "finance-news": {
+        "threshold": 6.0,
+        "topic_dedup": true
+      },
       "tech-blog": {
         "threshold": 5.0,
         "topic_dedup": false
@@ -242,6 +246,54 @@
         "category": "ai-practice-cn",
         "profile": "ai-practice",
         "content_extractor": "trafilatura"
+      },
+      {
+        "name": "Stratechery",
+        "url": "https://stratechery.com/feed/",
+        "enabled": true,
+        "category": "ai-business",
+        "profile": "finance-news",
+        "content_extractor": "trafilatura"
+      },
+      {
+        "name": "Lenny's Newsletter",
+        "url": "https://www.lennysnewsletter.com/feed",
+        "enabled": true,
+        "category": "ai-business",
+        "profile": "finance-news",
+        "content_extractor": "trafilatura"
+      },
+      {
+        "name": "Sequoia Capital",
+        "url": "https://www.sequoiacap.com/feed/",
+        "enabled": true,
+        "category": "ai-business",
+        "profile": "finance-news",
+        "content_extractor": "trafilatura"
+      },
+      {
+        "name": "TechCrunch Venture",
+        "url": "https://techcrunch.com/category/venture/feed/",
+        "enabled": true,
+        "category": "ai-business",
+        "profile": "finance-news",
+        "content_extractor": "trafilatura"
+      },
+      {
+        "name": "TechCrunch Startups",
+        "url": "https://techcrunch.com/category/startups/feed/",
+        "enabled": true,
+        "category": "ai-business",
+        "profile": "finance-news",
+        "content_extractor": "trafilatura"
+      },
+      {
+        "name": "SaaStr",
+        "url": "https://www.saastr.com/feed/",
+        "enabled": true,
+        "category": "ai-business",
+        "profile": "finance-news",
+        "content_extractor": "trafilatura"
       }
     ],
     "reddit": {
@@ -336,6 +388,7 @@
     "profile_order": [
       "tech-news",
       "ai-practice",
+      "finance-news",
       "tech-blog"
     ],
     "category_groups": {},
